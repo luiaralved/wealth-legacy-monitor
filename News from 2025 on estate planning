@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estate Planning News 2025</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f4f4f4}
+    header{background:#007bff;color:#fff;padding:20px;text-align:center}
+    nav{background:#333;padding:10px;text-align:center}
+    nav a{color:#fff;margin:0 15px;text-decoration:none;font-weight:bold}
+    nav a:hover{text-decoration:underline}
+    section{margin:20px 0;padding:20px;background:#fff;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1)}
+    h1,h2{color:#333}
+    ul{list-style:none;padding:0}
+    li{margin:15px 0;padding-bottom:15px;border-bottom:1px solid #eee}
+    .title{font-weight:bold}
+    .desc{color:#666;font-size:0.95em}
+    .date{color:#999;font-size:0.9em}
+    .warning{color:#d9534f}
+  </style>
+</head>
+<body>
+  <header><h1>Estate Planning Monitor</h1></header>
+  <nav>
+    <a href="estate-planning.html">Estate Planning</a>
+    <a href="generational-wealth.html">Generational Wealth</a>
+  </nav>
+
+  <section>
+    <h2>Latest 2025 Articles on Estate Planning</h2>
+    <ul id="news-list"><li>Loading 2025 articles...</li></ul>
+  </section>
+
+  <script>
+    const API_KEY = '9472bbb5b26e470ba511ef20024e2832';
+    const allowed = ['localhost', '.github.io'];
+    if (!allowed.some(h => location.hostname.includes(h))) {
+      document.getElementById('news-list').innerHTML = '<li class="warning">News blocked – API key protected.</li>';
+    } else {
+      async function loadNews() {
+        const query = 'estate planning';
+        const from = '2025-01-01';
+        const to = '2025-12-31';
+        const url = `https://newsapi.org/v2/everything?q=${query}&from=${from}&to=${to}&sortBy=publishedAt&pageSize=20&apiKey=${API_KEY}`;
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          display(data.articles || []);
+        } catch (e) {
+          document.getElementById('news-list').innerHTML = '<li class="warning">Failed to load news. Try again later.</li>';
+        }
+      }
+
+      function display(articles) {
+        const ul = document.getElementById('news-list');
+        ul.innerHTML = '';
+        if (!articles.length) {
+          ul.innerHTML = '<li>No 2025 articles found.</li>';
+          return;
+        }
+        articles.forEach(a => {
+          const li = document.createElement('li');
+          const date = new Date(a.publishedAt).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
+          li.innerHTML = `
+            <div class="title"><a href="${a.url}" target="_blank">${a.title}</a></div>
+            <div class="desc">${a.description || 'No description.'}</div>
+            <div class="date">Published: ${date} | ${a.source.name}</div>
+          `;
+          ul.appendChild(li);
+        });
+      }
+
+      loadNews();
+    }
+  </script>
+</body>
+</html>
